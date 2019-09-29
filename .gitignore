@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/MyMentoringTasks/v16
+/CustomTaskScheduler/bin/Debug
+/CustomTaskScheduler/obj/Debug
+/CustomTaskSchedulerTests/bin/Debug
+/CustomTaskSchedulerTests/obj/Debug
