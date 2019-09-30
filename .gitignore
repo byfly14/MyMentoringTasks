@@ -7,3 +7,8 @@
 /CustomTaskScheduler/obj/Debug
 /CustomTaskSchedulerTests/bin/Debug
 /CustomTaskSchedulerTests/obj/Debug
+/.vs/slnx.sqlite
+/CustomTaskScheduler/obj/Release
+/CustomTaskSchedulerTests/obj/Release
+/MyBestTaskSchedulerTests/bin/Debug
+/MyBestTaskSchedulerTests/obj

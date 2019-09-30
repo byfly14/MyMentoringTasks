@@ -54,6 +54,13 @@ namespace CustomTaskScheduler
 
         protected override void QueueTask(Task task)
         {
+            if (task.CreationOptions.HasFlag(TaskCreationOptions.LongRunning))
+            {
+                var thread = new Thread(() => { TryExecuteTask(task); });
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+            }
+
             lock (_sync)
             {
                 if (_threads.Count != MaximumConcurrencyLevel)
