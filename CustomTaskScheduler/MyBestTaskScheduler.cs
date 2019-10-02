@@ -28,6 +28,8 @@ namespace CustomTaskScheduler
 
         public override int MaximumConcurrencyLevel => _maximumConcurrencyLevel;
         public EventHandler<Task> TryDequeueEventHandler;
+        public EventHandler<Task> RunLongRunningTaskEventHandler;
+        public int CountOfDequeuedTasks { get; private set; }
 
         public MyBestTaskScheduler(int concurrencyLevel)
         {
@@ -60,6 +62,7 @@ namespace CustomTaskScheduler
                 var thread = new Thread(() => { TryExecuteTask(task); });
                 thread.SetApartmentState(ApartmentState.STA);
                 thread.Start();
+                RunLongRunningTaskEventHandler?.Invoke(this, task);
             }
 
             lock (_sync)
@@ -91,14 +94,12 @@ namespace CustomTaskScheduler
                 if (!_tasksQueue.Contains(task)) return false;
                 _tasksQueue.Remove(task);
                 TryDequeueEventHandler.Invoke(this, task);
+                CountOfDequeuedTasks++;
                 return true;
             }
         }
 
-        protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
-        {
-            return _threads.Contains(Thread.CurrentThread) && TryExecuteTask(task);
-        }
+        protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) => _threads.Contains(Thread.CurrentThread) && TryExecuteTask(task);
 
         protected override IEnumerable<Task> GetScheduledTasks() => _taskExecutionQueue.ToArray();
 
@@ -136,11 +137,8 @@ namespace CustomTaskScheduler
             {
                 if (_tasksQueue.Count == 0) return;
 
-                foreach (var taskToDequeue in _tasksQueue.Where(t => t.GetCancellationToken().IsCancellationRequested).ToList())
-                {
-                    TryDequeue(taskToDequeue);
-                }
-
+                _tasksQueue.Where(t => t.GetCancellationToken().IsCancellationRequested).ToList().ForEach(t => TryDequeue(t));
+                
                 if (_tasksQueue.Count == 0) return;
 
                 var task = _tasksQueue[0];

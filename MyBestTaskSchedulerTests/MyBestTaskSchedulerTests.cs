@@ -14,15 +14,18 @@ namespace MyBestTaskSchedulerTests
         private MyBestTaskScheduler _testCustomScheduler;
 
         private const int SleepLength = 100;
-        private List<Task> _cancelledTasks;
         private readonly object sync = new object();
 
-        [TestCase(25, 5000)]
-        [TestCase(35, 7000)]
-        [TestCase(50, 10000)]
-        public void MyBestTaskScheduler_ShouldScheduleAllTasks_AllTasksSuccessfullyCompleted(int concurrencyLevel, int tasksCount)
+        private List<Task> _cancelledTasks;
+        private Task _longRunningTask;
+
+        [TestCase(25, 5000, 2500)]
+        [TestCase(35, 7000, 4000)]
+        [TestCase(50, 10000, 5500)]
+        public void MyBestTaskScheduler_ShouldScheduleAllTasks_AllTasksSuccessfullyCompleted(int concurrencyLevel, int tasksCount, int longRunningTask)
         {
             _testCustomScheduler = new MyBestTaskScheduler(concurrencyLevel);
+            _testCustomScheduler.RunLongRunningTaskEventHandler += RunLongRunningTaskEventHandler;
 
             var taskFactory = new TaskFactory(_testCustomScheduler);
 
@@ -30,24 +33,31 @@ namespace MyBestTaskSchedulerTests
 
             for (var i = 0; i < tasks.Length; i++)
             {
+                var tco = TaskCreationOptions.None;
+                if (i == longRunningTask)
+                {
+                    tco = TaskCreationOptions.LongRunning;
+                }
                 tasks[i] = taskFactory.StartNew(() =>
                 {
                     Thread.Sleep(SleepLength);
-                });
+                }, tco);
             }
 
             Task.WaitAll(tasks);
-
             Assert.IsTrue(tasks.All(t => t.IsCompleted));
+            Assert.AreEqual(_longRunningTask, tasks.First(t => t.CreationOptions.HasFlag(TaskCreationOptions.LongRunning)));
         }
 
-        [TestCase(10, 5000, 100)]
-        [TestCase(15, 7000, 200)]
-        [TestCase(20, 10000, 300)]
-        public void MyBestTaskScheduler_DequeueTasksOnCancellation(int concurrencyLevel, int tasksCount, int cancelAfter)
+        [TestCase(10, 5000)]
+        [TestCase(15, 7000)]
+        [TestCase(20, 10000)]
+        public void MyBestTaskScheduler_DequeueTasksOnCancellation(int concurrencyLevel, int tasksCount)
         {
             _testCustomScheduler = new MyBestTaskScheduler(concurrencyLevel);
             _testCustomScheduler.TryDequeueEventHandler += TryDequeueEventHandler;
+
+            _cancelledTasks = new List<Task>();
 
             var taskFactory = new TaskFactory(_testCustomScheduler);
 
@@ -60,18 +70,16 @@ namespace MyBestTaskSchedulerTests
                 tasks[i] = taskFactory.StartNew(() =>
                 {
                     Thread.Sleep(SleepLength);
-
                 }, source.Token);
             }
 
-            source.CancelAfter(cancelAfter);
-            foreach (var task in tasks)
-            {
-                Task.Run(() => task.Wait()).Wait();
-            }
+            source.CancelAfter(10);
 
+            Task.Delay(1000).Wait();
+            
             Assert.IsNotNull(_cancelledTasks);
-            Assert.IsTrue(_cancelledTasks.All(ct => ct.IsCanceled));
+            Assert.AreEqual(_testCustomScheduler.CountOfDequeuedTasks, _cancelledTasks.Count);
+            Assert.IsTrue(_cancelledTasks.All(ct => ct.Status == TaskStatus.WaitingToRun));
         }
 
         [TestCase(60)]
@@ -87,27 +95,22 @@ namespace MyBestTaskSchedulerTests
         [OneTimeTearDown]
         public void TearDown()
         {
-            if (_testCustomScheduler == null)
-            {
-                return;
-            }
-
             _testCustomScheduler.TryDequeueEventHandler -= TryDequeueEventHandler;
+            _testCustomScheduler.RunLongRunningTaskEventHandler -= RunLongRunningTaskEventHandler;
             _testCustomScheduler.Dispose();
         }
 
         private void TryDequeueEventHandler(object sender, Task task)
         {
-            if (_cancelledTasks == null)
-            {
-                _cancelledTasks = new List<Task>();
-            }
-
             lock (sync)
             {
-
                 _cancelledTasks.Add(task);
             }
+        }
+
+        private void RunLongRunningTaskEventHandler(object sender, Task e)
+        {
+            _longRunningTask = e;
         }
     }
 }
