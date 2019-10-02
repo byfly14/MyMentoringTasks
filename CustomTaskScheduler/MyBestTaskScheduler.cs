@@ -165,7 +165,7 @@ namespace CustomTaskScheduler
                 }
 
                 TryExecuteTask(t);
-
+                
                 if (MaximumConcurrencyLevel > _taskExecutionQueue.Count)
                 {
                     _notifyOfFreeCapacityEventHandler?.Invoke(_taskExecutionQueue, EventArgs.Empty);

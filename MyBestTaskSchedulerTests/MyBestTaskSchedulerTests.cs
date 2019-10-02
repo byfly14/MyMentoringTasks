@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace MyBestTaskSchedulerTests
 {
     [TestFixture]
-    public class UnitTest1
+    public class MyBestTaskSchedulerTests
     {
         private MyBestTaskScheduler _testCustomScheduler;
 
@@ -19,10 +19,11 @@ namespace MyBestTaskSchedulerTests
         private List<Task> _cancelledTasks;
         private Task _longRunningTask;
 
-        [TestCase(25, 5000, 2500)]
-        [TestCase(35, 7000, 4000)]
-        [TestCase(50, 10000, 5500)]
-        public void MyBestTaskScheduler_ShouldScheduleAllTasks_AllTasksSuccessfullyCompleted(int concurrencyLevel, int tasksCount, int longRunningTask)
+        [TestCase(25, 500, 250)]
+        [TestCase(35, 700, 400)]
+        [TestCase(50, 1000, 550)]
+        public void MyBestTaskScheduler_ShouldScheduleAllTasks_AllTasksSuccessfullyCompleted(
+            int concurrencyLevel, int tasksCount, int longRunningTask)
         {
             _testCustomScheduler = new MyBestTaskScheduler(concurrencyLevel);
             _testCustomScheduler.RunLongRunningTaskEventHandler += RunLongRunningTaskEventHandler;
@@ -34,10 +35,12 @@ namespace MyBestTaskSchedulerTests
             for (var i = 0; i < tasks.Length; i++)
             {
                 var tco = TaskCreationOptions.None;
+
                 if (i == longRunningTask)
                 {
                     tco = TaskCreationOptions.LongRunning;
                 }
+
                 tasks[i] = taskFactory.StartNew(() =>
                 {
                     Thread.Sleep(SleepLength);
@@ -49,10 +52,33 @@ namespace MyBestTaskSchedulerTests
             Assert.AreEqual(_longRunningTask, tasks.First(t => t.CreationOptions.HasFlag(TaskCreationOptions.LongRunning)));
         }
 
-        [TestCase(10, 5000)]
-        [TestCase(15, 7000)]
-        [TestCase(20, 10000)]
-        public void MyBestTaskScheduler_DequeueTasksOnCancellation(int concurrencyLevel, int tasksCount)
+        [TestCase(25, 400)]
+        [TestCase(35, 700)]
+        [TestCase(50, 1000)]
+        public void MyBestTaskScheduler_AllTasksShouldFail_WhenTheyThrowException(
+            int concurrencyLevel, int tasksCount)
+        {
+            _testCustomScheduler = new MyBestTaskScheduler(concurrencyLevel);
+
+            var taskFactory = new TaskFactory(_testCustomScheduler);
+
+            var tasks = new Task[tasksCount];
+            var continuationTasks = new Task<bool>[tasksCount];
+
+            for (var i = 0; i < tasks.Length; i++)
+            {
+                tasks[i] = taskFactory.StartNew(() => throw new Exception());
+                continuationTasks[i] = tasks[i].ContinueWith(t => t.IsFaulted, TaskContinuationOptions.OnlyOnFaulted);
+            }
+
+            Task.WaitAll(continuationTasks);
+            Assert.IsTrue(continuationTasks.All(t => t.Result));
+        }
+
+        [TestCase(10, 500)]
+        [TestCase(15, 700)]
+        [TestCase(20, 1000)]
+        public void MyBestTaskScheduler_ShouldDequeueTasks_WhichWereCancelled(int concurrencyLevel, int tasksCount)
         {
             _testCustomScheduler = new MyBestTaskScheduler(concurrencyLevel);
             _testCustomScheduler.TryDequeueEventHandler += TryDequeueEventHandler;
