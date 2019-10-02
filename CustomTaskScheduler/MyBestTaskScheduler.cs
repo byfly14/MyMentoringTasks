@@ -27,6 +27,7 @@ namespace CustomTaskScheduler
         private bool _disposed;
 
         public override int MaximumConcurrencyLevel => _maximumConcurrencyLevel;
+        public EventHandler<Task> TryDequeueEventHandler;
 
         public MyBestTaskScheduler(int concurrencyLevel)
         {
@@ -89,12 +90,15 @@ namespace CustomTaskScheduler
             {
                 if (!_tasksQueue.Contains(task)) return false;
                 _tasksQueue.Remove(task);
+                TryDequeueEventHandler.Invoke(this, task);
                 return true;
             }
         }
 
         protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
-            => _threads.Contains(Thread.CurrentThread) && TryExecuteTask(task);
+        {
+            return _threads.Contains(Thread.CurrentThread) && TryExecuteTask(task);
+        }
 
         protected override IEnumerable<Task> GetScheduledTasks() => _taskExecutionQueue.ToArray();
 
@@ -130,6 +134,13 @@ namespace CustomTaskScheduler
 
             lock (_sync)
             {
+                if (_tasksQueue.Count == 0) return;
+
+                foreach (var taskToDequeue in _tasksQueue.Where(t => t.GetCancellationToken().IsCancellationRequested).ToList())
+                {
+                    TryDequeue(taskToDequeue);
+                }
+
                 if (_tasksQueue.Count == 0) return;
 
                 var task = _tasksQueue[0];
