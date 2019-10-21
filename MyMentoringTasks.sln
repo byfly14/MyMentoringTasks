@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTaskScheduler", "Cust
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBestTaskSchedulerTests", "MyBestTaskSchedulerTests\MyBestTaskSchedulerTests.csproj", "{B712CF2A-1588-47D4-B3C9-95A3F749BE1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expressions", "Expressions\Expressions.csproj", "{099C638D-8839-402A-8045-9BD4F7F8FE6C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B712CF2A-1588-47D4-B3C9-95A3F749BE1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B712CF2A-1588-47D4-B3C9-95A3F749BE1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B712CF2A-1588-47D4-B3C9-95A3F749BE1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{099C638D-8839-402A-8045-9BD4F7F8FE6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{099C638D-8839-402A-8045-9BD4F7F8FE6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{099C638D-8839-402A-8045-9BD4F7F8FE6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{099C638D-8839-402A-8045-9BD4F7F8FE6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
