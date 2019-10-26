@@ -16,7 +16,7 @@ namespace Expressions
                 con.Open();
                 var db = new DbContext(con);
 
-                var query = db.Humans/*.Where(c => c.Id == 2 || c.Name.Contains("n"))*/.Select(c => /*c.Id*/new SelectHumanStruct { Name = c.Name, Surname = c.Surname });
+                var query = db.Humans.Where(c => c.Id == 2)/*.Select(c => c.Id new SelectHumanStruct { Name = c.Name, Surname = c.Surname })*/;
 
                 Console.WriteLine("Query:\n{0}\n", query);
 
@@ -29,10 +29,14 @@ namespace Expressions
             }
         }
 
+        [DbTable("Humans")]
         public class Human
         {
+            [DbColumn("IdColumn")]
             public int Id;
+            [DbColumn("NameColumn")]
             public string Name;
+            [DbColumn("SurnameColumn")]
             public string Surname;
         }
 

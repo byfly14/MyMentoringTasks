@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Reflection;
 
 namespace Expressions
@@ -110,7 +111,10 @@ namespace Expressions
 
                 for (int i = 0, n = _fields.Length; i < n; i++)
                 {
-                    _fieldLookup[i] = map.TryGetValue(_fields[i].Name, out var index) ? index : -1;
+                    var attr = (DbColumnAttribute)_fields[i]
+                        .GetCustomAttributes(typeof(DbColumnAttribute), true)
+                        .FirstOrDefault();
+                    _fieldLookup[i] = map.TryGetValue(attr?.Name ?? _fields[i].Name, out var index) ? index : -1;
                 }
             }
 

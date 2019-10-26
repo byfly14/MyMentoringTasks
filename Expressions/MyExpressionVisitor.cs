@@ -166,7 +166,10 @@ namespace Expressions
             if (c.Value is IQueryable q)
             {
                 _sb.Append("SELECT * FROM ");
-                _sb.Append(q.ElementType.Name);
+                var attr = (DbTableAttribute)q.ElementType
+                    .GetCustomAttributes(typeof(DbTableAttribute), true)
+                    .FirstOrDefault();
+                _sb.Append(attr != null ? attr.Name : q.ElementType.Name);
             }
 
             else if (c.Value == null)
@@ -219,7 +222,10 @@ namespace Expressions
                 throw new NotSupportedException($"The member '{m.Member.Name}' is not supported");
             }
 
-            _sb.Append(m.Member.Name);
+            var attr = (DbColumnAttribute)m.Member
+                .GetCustomAttributes(typeof(DbColumnAttribute), true)
+                .FirstOrDefault();
+            _sb.Append(attr != null ? attr.Name : m.Member.Name);
             return m;
         }
     }
