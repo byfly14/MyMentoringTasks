@@ -11,11 +11,6 @@ namespace Expressions
         private ParameterExpression _row;
         private ColumnProjection _projection;
 
-        //internal MyQueryTranslator()
-        //{
-
-        //}
-
         internal TranslateResult Translate(Expression expression)
         {
             _sb = new StringBuilder();
@@ -41,11 +36,6 @@ namespace Expressions
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            if (m.Method.DeclaringType != typeof(Queryable))
-            {
-                throw new NotSupportedException($"The method '{m.Method.Name}' is not supported");
-            }
-
             switch (m.Method.Name)
             {
                 case "Where":
@@ -70,12 +60,38 @@ namespace Expressions
                         _sb.Append(") AS T");
                         _projection = projection;
 
+                        return m;
+                    }
 
+                case "Contains":
+                    {
+                        Visit(m.Object);
+                        _sb.Append(" LIKE '%");
+                        Visit(m.Arguments[0]);
+                        _sb.Append("%'");
+                        return m;
+                    }
+
+                case "StartsWith":
+                    {
+                        Visit(m.Object);
+                        _sb.Append(" LIKE '");
+                        Visit(m.Arguments[0]);
+                        _sb.Append("%'");
+                        return m;
+                    }
+
+                case "EndsWith":
+                    {
+                        Visit(m.Object);
+                        _sb.Append(" LIKE '%");
+                        Visit(m.Arguments[0]);
+                        _sb.Append("'");
                         return m;
                     }
 
                 default:
-                    throw new NotSupportedException(string.Format("The method '{0}' is not supported", m.Method.Name));
+                    throw new NotSupportedException($"The method '{m.Method.Name}' is not supported");
             }
         }
 
@@ -103,11 +119,13 @@ namespace Expressions
             switch (b.NodeType)
             {
                 case ExpressionType.And:
+                case ExpressionType.AndAlso:
                     _sb.Append(" AND ");
                     break;
 
                 case ExpressionType.Or:
-                    _sb.Append(" OR");
+                case ExpressionType.OrElse:
+                    _sb.Append(" OR ");
                     break;
 
                 case ExpressionType.Equal:
@@ -165,9 +183,21 @@ namespace Expressions
                         break;
 
                     case TypeCode.String:
-                        _sb.Append("'");
-                        _sb.Append(c.Value);
-                        _sb.Append("'");
+                        {
+                            var commandString = _sb.ToString();
+                            var containsLike = commandString.Substring(commandString.Length - 7).Contains("LIKE '");
+                            if (!containsLike)
+                            {
+                                _sb.Append("'");
+                            }
+
+                            _sb.Append(c.Value);
+
+                            if (!containsLike)
+                            {
+                                _sb.Append("'");
+                            }
+                        }
                         break;
 
                     case TypeCode.Object:

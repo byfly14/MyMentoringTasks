@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Expressions
 {
-    internal class ObjectReader<T> : IEnumerable<T> where T : class, new ()
+    internal class ObjectReader<T> : IEnumerable<T> where T : new ()
     {
         private Enumerator _enumerator;
         
@@ -35,7 +35,6 @@ namespace Expressions
         {
             private readonly DbDataReader _reader;
             private readonly FieldInfo[] _fields;
-            private readonly PropertyInfo[] _properties;
 
             private bool _disposed;
             private int[] _fieldLookup;
@@ -48,7 +47,6 @@ namespace Expressions
             {
                 _reader = reader;
                 _fields = typeof(T).GetFields();
-                _properties = typeof(T).GetProperties();
             }
 
             public bool MoveNext()
@@ -58,49 +56,36 @@ namespace Expressions
                     return false;
                 }
 
+                if (typeof(T).IsValueType && typeof(T).IsPrimitive)
+                {
+                    var instancePrimitive = _reader.GetFieldValue<T>(0);
+                    Current = instancePrimitive;
+                    return true;
+                }
+
                 if (_fieldLookup == null)
                 {
                     InitFieldLookup();
                 }
 
-                var instance = new T();
+                object boxed = new T();
 
-                if (_fields.Length > 0)
+                for (int i = 0, n = _fields.Length; i < n; i++)
                 {
-                    for (int i = 0, n = _fields.Length; i < n; i++)
+                    var index = _fieldLookup[i];
+
+                    if (index < 0)
                     {
-                        var index = _fieldLookup[i];
-
-                        if (index < 0)
-                        {
-                            continue;
-                        }
-
-                        var fi = _fields[i];
-
-                        fi.SetValue(instance, _reader.IsDBNull(index) ? null : _reader.GetValue(index));
+                        continue;
                     }
+
+                    var fi = _fields[i];
+
+                    fi.SetValue(boxed,  _reader.GetValue(index));
                 }
-                else
-                {
-                    for (int i = 0, n = _properties.Length; i < n; i++)
-                    {
-                        var index = _fieldLookup[i];
 
-                        if (index < 0)
-                        {
-                            continue;
-                        }
 
-                        var fi = _properties[i];
-
-                        fi.SetValue(instance, _reader.IsDBNull(index) ? null : _reader.GetValue(index));
-                    }
-                }
-                    
-                
-
-                Current = instance;
+                Current = (T)boxed;
                     
                 return true;
 
@@ -121,23 +106,11 @@ namespace Expressions
                     map.Add(_reader.GetName(i), i);
                 }
 
-                if (_fields.Length > 0)
-                {
-                    _fieldLookup = new int[_fields.Length];
+                _fieldLookup = new int[_fields.Length];
 
-                    for (int i = 0, n = _fields.Length; i < n; i++)
-                    {
-                        _fieldLookup[i] = map.TryGetValue(_fields[i].Name, out var index) ? index : -1;
-                    }
-                }
-                else
+                for (int i = 0, n = _fields.Length; i < n; i++)
                 {
-                    _fieldLookup = new int[_properties.Length];
-
-                    for (int i = 0, n = _properties.Length; i < n; i++)
-                    {
-                        _fieldLookup[i] = map.TryGetValue(_properties[i].Name, out var index) ? index : -1;
-                    }
+                    _fieldLookup[i] = map.TryGetValue(_fields[i].Name, out var index) ? index : -1;
                 }
             }
 

@@ -16,13 +16,13 @@ namespace Expressions
                 con.Open();
                 var db = new DbContext(con);
 
-                var query = db.Humans.Where(c => c.Id != 1).Select(c => new SelectHuman { Name = c.Name, Surname = c.Surname });
+                var query = db.Humans/*.Where(c => c.Id == 2 || c.Name.Contains("n"))*/.Select(c => /*c.Id*/new SelectHumanStruct { Name = c.Name, Surname = c.Surname });
 
                 Console.WriteLine("Query:\n{0}\n", query);
 
                 foreach (var item in query)
                 {
-                    Console.WriteLine($"{item.Name} {item.Surname}");
+                    Console.WriteLine($"{item.Name}");
                 }
 
                 Console.ReadLine();
@@ -38,6 +38,12 @@ namespace Expressions
 
 
         public class SelectHuman
+        {
+            public string Name;
+            public string Surname;
+        }
+
+        public struct SelectHumanStruct
         {
             public string Name;
             public string Surname;
