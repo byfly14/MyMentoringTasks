@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
@@ -34,7 +35,7 @@ namespace Expressions
         {
             _sb = new StringBuilder();
             _row = row;
-            
+
             var selector = Visit(expression);
             return new ColumnProjection
             {
@@ -45,17 +46,16 @@ namespace Expressions
 
         protected override Expression VisitMember(MemberExpression m)
         {
-            if (m.Expression == null || m.Expression.NodeType != ExpressionType.Parameter)
-            {
-                return base.VisitMember(m);
-            }
-
             if (_sb.Length > 0)
             {
                 _sb.Append(", ");
             }
 
-            _sb.Append(m.Member.Name);
+            var attr = (DbColumnAttribute)m.Member
+                .GetCustomAttributes(typeof(DbColumnAttribute), true)
+                .FirstOrDefault();
+
+            _sb.Append(attr?.Name ?? m.Member.Name);
 
             return Expression.Convert(
                 Expression.Call(_row, _miGetValue, Expression.Constant(_iColumn++)), m.Type);

@@ -16,13 +16,13 @@ namespace Expressions
         
         public override string GetQueryText(Expression expression)
         {
-            return Translate(expression).CommandText;
+            return Translate(expression);
         }
 
         public override object Execute(Expression expression)
         {
             var cmd = _connection.CreateCommand();
-            cmd.CommandText = Translate(expression).CommandText;
+            cmd.CommandText = Translate(expression);
             var reader = cmd.ExecuteReader();
             var elementType = TypeSystem.GetElementType(expression.Type);
             
@@ -33,7 +33,7 @@ namespace Expressions
                 null);
         }
 
-        private static TranslateResult Translate(Expression expression)
+        private static string Translate(Expression expression)
         {
             return new MyQueryTranslator().Translate(expression);
         }

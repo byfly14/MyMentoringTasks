@@ -17,44 +17,15 @@ namespace Expressions
         {
             while (true)
             {
-                if (seqType == null)
+                foreach (var arg in seqType.GetGenericArguments())
                 {
-                    return null;
-                }
+                    var iEnum = typeof(IEnumerable<>).MakeGenericType(arg);
 
-                if (seqType.IsArray)
-                {
-                    return typeof(IEnumerable<>).MakeGenericType(seqType.GetElementType());
-                }
-
-
-                if (seqType.IsGenericType)
-                {
-                    foreach (var arg in seqType.GetGenericArguments())
+                    if (iEnum.IsAssignableFrom(seqType))
                     {
-                        var iEnum = typeof(IEnumerable<>).MakeGenericType(arg);
-
-                        if (iEnum.IsAssignableFrom(seqType))
-                        {
-                            return iEnum;
-                        }
+                        return iEnum;
                     }
                 }
-
-                var interfaces = seqType.GetInterfaces();
-
-                if (interfaces.Length > 0)
-                {
-                    foreach (var intface in interfaces)
-                    {
-                        var iEnum = FindIEnumerable(intface);
-
-                        if (iEnum != null) return iEnum;
-                    }
-                }
-
-                if (seqType.BaseType == null || seqType.BaseType == typeof(object)) return null;
-                seqType = seqType.BaseType;
             }
         }
     }

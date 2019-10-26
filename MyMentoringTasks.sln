@@ -5,9 +5,11 @@ VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTaskScheduler", "CustomTaskScheduler\CustomTaskScheduler.csproj", "{1D88346B-1CC9-469B-ACDE-1B5C9E8880B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBestTaskSchedulerTests", "MyBestTaskSchedulerTests\MyBestTaskSchedulerTests.csproj", "{B712CF2A-1588-47D4-B3C9-95A3F749BE1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTaskSchedulerTests", "MyBestTaskSchedulerTests\CustomTaskSchedulerTests.csproj", "{B712CF2A-1588-47D4-B3C9-95A3F749BE1A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expressions", "Expressions\Expressions.csproj", "{099C638D-8839-402A-8045-9BD4F7F8FE6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionsTests", "ExpressionsTests\ExpressionsTests.csproj", "{C9C3B029-AB73-4B4C-9101-DC62227FE90D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{099C638D-8839-402A-8045-9BD4F7F8FE6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{099C638D-8839-402A-8045-9BD4F7F8FE6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{099C638D-8839-402A-8045-9BD4F7F8FE6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9C3B029-AB73-4B4C-9101-DC62227FE90D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9C3B029-AB73-4B4C-9101-DC62227FE90D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9C3B029-AB73-4B4C-9101-DC62227FE90D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9C3B029-AB73-4B4C-9101-DC62227FE90D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -26,16 +26,6 @@ namespace Expressions
 
         public Query(QueryProvider provider, Expression expression)
         {
-            if (expression == null)
-            {
-                throw new ArgumentNullException(nameof(expression));
-            }
-
-            if (!typeof(IQueryable<T>).IsAssignableFrom(expression.Type))
-            {
-                throw new ArgumentOutOfRangeException(nameof(expression));
-            }
-            
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
             _expression = expression;
         }

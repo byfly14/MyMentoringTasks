@@ -82,7 +82,7 @@ namespace Expressions
 
                     var fi = _fields[i];
 
-                    fi.SetValue(boxed,  _reader.GetValue(index));
+                    fi.SetValue(boxed, _reader.IsDBNull(index) ? null : _reader.GetValue(index));
                 }
 
 
