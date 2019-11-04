@@ -1,0 +1,10 @@
+﻿  pch.cpp
+  dllmain.cpp
+  Library.cpp
+  Generating Code...
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\UnmanagedPowerStateLibraray\Library.cpp(24): warning C4172:  returning address of local variable or temporary: last_wake_time
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\UnmanagedPowerStateLibraray\Library.cpp(51): warning C4172:  returning address of local variable or temporary: system_power_information
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\UnmanagedPowerStateLibraray\Library.cpp(42): warning C4172:  returning address of local variable or temporary: system_battery_state
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\UnmanagedPowerStateLibraray\Library.cpp(33): warning C4172:  returning address of local variable or temporary: last_sleep_time
+     Creating library C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\x64\Debug\UnmanagedPowerStateLibraray.lib and object C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\x64\Debug\UnmanagedPowerStateLibraray.exp
+  UnmanagedPowerStateLibraray.vcxproj -> C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\x64\Debug\UnmanagedPowerStateLibraray.dll

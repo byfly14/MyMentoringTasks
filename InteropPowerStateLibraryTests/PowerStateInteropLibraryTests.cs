@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using ManagedPowerStateLibrary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MyComServer;
 
 namespace InteropPowerStateLibraryTests
 {
@@ -11,8 +12,9 @@ namespace InteropPowerStateLibraryTests
         [TestMethod]
         public void GetLastWakeTime()
         {
-            var t = PowerStateLibraryInterop.GetLastWakeTime();
-            Console.WriteLine(t);
+            dynamic comObject = Activator.CreateComInstanceFrom(@"C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\MyComServer\bin\Debug\MyComServer.dll", "MyComServer.ComPowerStateLibrary").Unwrap();
+            var obj = comObject.GetLastWakeTime();
+            //Console.WriteLine((obj.GetType()obj).GetLastWakeTime());
         }
 
         [TestMethod]

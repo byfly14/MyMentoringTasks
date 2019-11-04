@@ -17,3 +17,5 @@ C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\InteropPowerStateLibraryTests\o
 C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\InteropPowerStateLibraryTests\obj\Debug\InteropPowerStateLibraryTests.csproj.CopyComplete
 C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\InteropPowerStateLibraryTests\obj\Debug\InteropPowerStateLibraryTests.dll
 C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\InteropPowerStateLibraryTests\obj\Debug\InteropPowerStateLibraryTests.pdb
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\InteropPowerStateLibraryTests\bin\Debug\MyComServer.dll
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\InteropPowerStateLibraryTests\bin\Debug\MyComServer.pdb

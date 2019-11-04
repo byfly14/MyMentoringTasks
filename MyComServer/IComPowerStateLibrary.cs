@@ -21,7 +21,6 @@ namespace MyComServer
 
     [ComVisible(true)]
     [Guid("12B5C4D1-B66A-407D-9A0A-69CECE4ABBD5")]
-    [ClassInterface(ClassInterfaceType.None)]
     public class ComPowerStateLibrary : IComPowerStateLibrary
     {
         public int GetTheAnswerToTheMainQuestion(int a)
@@ -31,7 +30,16 @@ namespace MyComServer
 
         public ulong GetLastWakeTime()
         {
-            return PowerStateLibraryInterop.GetLastWakeTime();
+            try
+            {
+                System.Diagnostics.Debugger.Launch();
+                return PowerStateLibraryInterop.GetLastWakeTime();
+            }
+            catch (Exception e)
+            {
+                return 123;
+            }
+
         }
 
         public ulong GetLastSleepTime()
