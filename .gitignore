@@ -16,3 +16,10 @@
 /Expressions/bin/Debug
 /ExpressionsTests/obj/Debug
 /ExpressionsTests/bin/Debug
+/UnmanagedPowerStateLibraray/Debug/Unmanage.29278E13.tlog
+/UnmanagedPowerStateLibraray/Debug
+*.dll
+*.exp
+*.ilk
+*.pdb
+*.lib

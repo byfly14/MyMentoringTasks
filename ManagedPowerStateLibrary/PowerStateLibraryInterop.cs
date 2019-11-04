@@ -9,39 +9,39 @@ namespace ManagedPowerStateLibrary
 {
     public class PowerStateLibraryInterop
     {
-        [DllImport("UnmanagedPowerStateLibrary.dll", 
+        [DllImport("UnmanagedPowerStateLibraray.dll", 
             EntryPoint = "GetLastWakeTime", 
             CallingConvention = CallingConvention.Cdecl)]
         public static extern ulong GetLastWakeTime();
 
-        [DllImport("UnmanagedPowerStateLibrary.dll",
+        [DllImport("UnmanagedPowerStateLibraray.dll",
             EntryPoint = "GetLastSleepTime",
             CallingConvention = CallingConvention.Cdecl)]
         public static extern ulong GetLastSleepTime();
 
-        [DllImport("UnmanagedPowerStateLibrary.dll",
+        [DllImport("UnmanagedPowerStateLibraray.dll",
             EntryPoint = "GetSystemBatteryState",
             CallingConvention = CallingConvention.Cdecl)]
-        public static extern void GetSystemBatteryState(ref SYSTEM_BATTERY_STATE ptr);
+        public static extern IntPtr GetSystemBatteryState();
 
-        [DllImport("UnmanagedPowerStateLibrary.dll",
-            EntryPoint = "GetSystemPowerState",
+        [DllImport("UnmanagedPowerStateLibraray.dll",
+            EntryPoint = "GetSystemPowerInformation",
             CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr GetSystemPowerInformation();
 
-        [DllImport("UnmanagedPowerStateLibrary.dll",
+        [DllImport("UnmanagedPowerStateLibraray.dll",
             EntryPoint = "EnableHiberFile",
             CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool EnableHiberFile();
 
-        [DllImport("UnmanagedPowerStateLibrary.dll",
+        [DllImport("UnmanagedPowerStateLibraray.dll",
             EntryPoint = "DisableHiberFile",
             CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool DisableHiberFile();
 
-        [DllImport("UnmanagedPowerStateLibrary.dll",
+        [DllImport("UnmanagedPowerStateLibraray.dll",
             EntryPoint = "Hibernate",
             CallingConvention = CallingConvention.Cdecl)]
         public static extern void Hibernate([MarshalAs(UnmanagedType.I1)]bool bHibernate, [MarshalAs(UnmanagedType.I1)]bool bForce, [MarshalAs(UnmanagedType.I1)]bool bWakeupEventsDisabled);

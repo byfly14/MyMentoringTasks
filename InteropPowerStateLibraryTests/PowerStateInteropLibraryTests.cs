@@ -25,9 +25,9 @@ namespace InteropPowerStateLibraryTests
         [TestMethod]
         public void GetSystemBatteryState()
         {
-            var btState = new SYSTEM_BATTERY_STATE();
-            PowerStateLibraryInterop.GetSystemBatteryState(ref btState);
-            Console.WriteLine(btState);
+            var btState = PowerStateLibraryInterop.GetSystemBatteryState();
+            SYSTEM_BATTERY_STATE batteryState = (SYSTEM_BATTERY_STATE)Marshal.PtrToStructure(btState, typeof(SYSTEM_BATTERY_STATE));
+            Console.WriteLine(batteryState);
         }
 
         [TestMethod]
@@ -49,6 +49,7 @@ namespace InteropPowerStateLibraryTests
         }
 
         [TestMethod]
+        [Ignore]
         public void Hibernate()
         {
             PowerStateLibraryInterop.Hibernate(true, false, false);

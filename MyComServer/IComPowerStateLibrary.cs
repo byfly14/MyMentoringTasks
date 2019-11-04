@@ -15,7 +15,7 @@ namespace MyComServer
     {
         ulong GetLastWakeTime();
         ulong GetLastSleepTime();
-        void GetSystemBatteryState(ref SYSTEM_BATTERY_STATE ptr);
+        IntPtr GetSystemBatteryState();
         IntPtr GetSystemPowerInformation();
         bool EnableHiberFile();
         bool DisableHiberFile();
@@ -37,9 +37,9 @@ namespace MyComServer
             return PowerStateLibraryInterop.GetLastSleepTime();
         }
 
-        public void GetSystemBatteryState(ref SYSTEM_BATTERY_STATE ptr)
+        public IntPtr GetSystemBatteryState()
         {
-            PowerStateLibraryInterop.GetSystemBatteryState(ref ptr);
+            return PowerStateLibraryInterop.GetSystemBatteryState();
         }
 
         public IntPtr GetSystemPowerInformation()
