@@ -1,0 +1,9 @@
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\MyComServer\bin\Debug\MyComServer.dll
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\MyComServer\bin\Debug\MyComServer.pdb
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\MyComServer\bin\Debug\ManagedPowerStateLibrary.dll
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\MyComServer\bin\Debug\ManagedPowerStateLibrary.pdb
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\MyComServer\obj\Debug\MyComServer.csprojAssemblyReference.cache
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\MyComServer\obj\Debug\MyComServer.csproj.CoreCompileInputs.cache
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\MyComServer\obj\Debug\MyComServer.csproj.CopyComplete
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\MyComServer\obj\Debug\MyComServer.dll
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\MyComServer\obj\Debug\MyComServer.pdb

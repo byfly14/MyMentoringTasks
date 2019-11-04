@@ -1,0 +1,5 @@
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\ManagedPowerStateLibrary\bin\Debug\ManagedPowerStateLibrary.dll
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\ManagedPowerStateLibrary\bin\Debug\ManagedPowerStateLibrary.pdb
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\ManagedPowerStateLibrary\obj\Debug\InteropPowerStateLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\ManagedPowerStateLibrary\obj\Debug\ManagedPowerStateLibrary.dll
+C:\Users\Yan_Kmita\Source\Repos\MyMentoringTasks\ManagedPowerStateLibrary\obj\Debug\ManagedPowerStateLibrary.pdb

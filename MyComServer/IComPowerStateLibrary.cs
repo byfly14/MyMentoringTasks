@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using ManagedPowerStateLibrary;
 
 namespace MyComServer
 {
     [ComVisible(true)]
-    [Guid("A5D8ED67-BF8C-48E7-AB6E-10CB757CAF3B")]
-    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    [Guid("DD917AE7-D175-491B-AC84-7BC612C8AEA4")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
     public interface IComPowerStateLibrary
     {
+        int GetTheAnswerToTheMainQuestion(int a);
         ulong GetLastWakeTime();
         ulong GetLastSleepTime();
         IntPtr GetSystemBatteryState();
@@ -23,10 +20,15 @@ namespace MyComServer
     }
 
     [ComVisible(true)]
-    [Guid("195EB5F8-952C-48E2-BD0F-DA8229C5A07D")]
+    [Guid("12B5C4D1-B66A-407D-9A0A-69CECE4ABBD5")]
     [ClassInterface(ClassInterfaceType.None)]
     public class ComPowerStateLibrary : IComPowerStateLibrary
     {
+        public int GetTheAnswerToTheMainQuestion(int a)
+        {
+            return a;
+        }
+
         public ulong GetLastWakeTime()
         {
             return PowerStateLibraryInterop.GetLastWakeTime();
@@ -39,7 +41,7 @@ namespace MyComServer
 
         public IntPtr GetSystemBatteryState()
         {
-            return PowerStateLibraryInterop.GetSystemBatteryState();
+            return Marshal.ReadIntPtr(PowerStateLibraryInterop.GetSystemBatteryState());
         }
 
         public IntPtr GetSystemPowerInformation()
@@ -51,7 +53,7 @@ namespace MyComServer
         {
             return PowerStateLibraryInterop.EnableHiberFile();
         }
-
+        
         public bool DisableHiberFile()
         {
             return PowerStateLibraryInterop.DisableHiberFile();

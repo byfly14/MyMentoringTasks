@@ -12,11 +12,13 @@ namespace ManagedPowerStateLibrary
         [DllImport("UnmanagedPowerStateLibraray.dll", 
             EntryPoint = "GetLastWakeTime", 
             CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.U8)]
         public static extern ulong GetLastWakeTime();
 
         [DllImport("UnmanagedPowerStateLibraray.dll",
             EntryPoint = "GetLastSleepTime",
             CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.U8)]
         public static extern ulong GetLastSleepTime();
 
         [DllImport("UnmanagedPowerStateLibraray.dll",
