@@ -38,3 +38,8 @@
 /UnmanagedPowerStateLibraray/x64/Debug/pch.obj
 /UnmanagedPowerStateLibraray/x64/Debug/Library.obj
 /UnmanagedPowerStateLibraray/x64/Debug/dllmain.obj
+/MyKafka.Common/obj/Debug
+/MyKafkaConsumerService/obj/Debug
+/MyKafkaProducerService/bin/Debug
+/MyKafkaProducerService/obj/Debug
+/MyKafkaConsumerService/bin/Debug
