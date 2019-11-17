@@ -17,8 +17,6 @@ namespace MyKafkaConsumerService
 
         protected override void OnStart(string[] args)
         {
-            System.Diagnostics.Debugger.Launch();
-
             _consumer = new MyKafkaConsumer(BrokerEndpoints, FolderToConsume);
             _consumer.Listen(_cts.Token);
         }

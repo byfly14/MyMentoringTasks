@@ -32,7 +32,7 @@ namespace MyComServer
         {
             try
             {
-                System.Diagnostics.Debugger.Launch();
+                //System.Diagnostics.Debugger.Launch();
                 return PowerStateLibraryInterop.GetLastWakeTime();
             }
             catch (Exception e)

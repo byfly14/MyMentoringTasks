@@ -18,7 +18,7 @@ namespace MyKafkaProducerService
 
         protected override void OnStart(string[] args)
         {
-            System.Diagnostics.Debugger.Launch();
+            //System.Diagnostics.Debugger.Launch();
 
             _producer = new MyKafkaProducer(BrokerEndpoints, FolderToProduce);
             _producer.Start(_cts.Token);

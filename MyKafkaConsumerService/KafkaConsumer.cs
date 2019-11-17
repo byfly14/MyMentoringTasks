@@ -31,6 +31,7 @@ namespace MyKafkaConsumerService
 
         public void Subscribe(string topic)
         {
+            System.Diagnostics.Debugger.Launch();
             _consumer.Subscribe(topic);
         }
 

@@ -9,14 +9,55 @@ namespace MyKafkaProducerService
     public class KafkaProducer<T> : IDisposable
     {
         private readonly IProducer<Null, T> _producer;
+        private readonly FileSystemWatcher _configFileSystemWatcher;
+        private readonly ProducerConfig _config;
 
         private bool _disposed;
         public KafkaProducer(string brokerEndpoints)
         {
-            var config = new ProducerConfig { BootstrapServers = brokerEndpoints };
+            _config = new ProducerConfig { BootstrapServers = brokerEndpoints };
+            //System.Diagnostics.Debugger.Launch();
+            //if (typeof(T) != typeof(string))
+            //{
+            //    _configFileSystemWatcher = new FileSystemWatcher(@"D:\ConfigFolder");
+            //    _configFileSystemWatcher.EnableRaisingEvents = true;
+            //    _configFileSystemWatcher.Changed += ConfigFileSystemWatcherOnChanged;
+            //    UpdateMessageMaxBytes(@"D:\ConfigFolder\config.txt");
+            //}
 
-            var producerBuilder = new ProducerBuilder<Null, T>(config);
+            var producerBuilder = new ProducerBuilder<Null, T>(_config);
             _producer = producerBuilder.Build();
+        }
+
+        private void ConfigFileSystemWatcherOnChanged(object sender, FileSystemEventArgs e)
+        {
+            _configFileSystemWatcher.EnableRaisingEvents = false;
+            if (e.Name == "config.txt")
+            {
+                UpdateMessageMaxBytes(e.FullPath);
+            }
+            _configFileSystemWatcher.EnableRaisingEvents = true;
+        }
+
+        private void UpdateMessageMaxBytes(string filePath)
+        {
+            using (var file = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (var reader = new StreamReader(file))
+                {
+                    var previousValue = _config.MessageMaxBytes;
+                    var data = reader.ReadLine();
+                    if (!int.TryParse(data, out var result))
+                    {
+                        return;
+                    }
+
+                    _config.MessageMaxBytes = result;
+                    File.AppendAllLines(@"D:\ConfigChanges.txt",
+                        new List<string>
+                            {$"{DateTime.Now}: PreviousValue = {previousValue}, CurrentValue = {_config.MessageMaxBytes}"});
+                }
+            }
         }
 
         public async Task<DeliveryResult<Null, T>> ProduceAsync(T value, string topic, int partitionId = -1)
@@ -41,12 +82,10 @@ namespace MyKafkaProducerService
             }
             catch (ProduceException<Null, T> e)
             {
-                File.AppendAllLines(@"D:\1.txt", new List<string> { e.ToString() });
                 throw new KafkaException(e.Error);
             }
             catch (Exception ex)
             {
-                File.AppendAllLines(@"D:\1.txt", new List<string> { ex.ToString() });
                 throw;
             }
         }
@@ -63,6 +102,13 @@ namespace MyKafkaProducerService
 
             if (disposing)
             {
+                if (_configFileSystemWatcher != null)
+                {
+                    _configFileSystemWatcher.EnableRaisingEvents = false;
+                    _configFileSystemWatcher.Changed -= ConfigFileSystemWatcherOnChanged;
+                    _configFileSystemWatcher.Dispose();
+                }
+
                 _producer.Dispose();
             }
 

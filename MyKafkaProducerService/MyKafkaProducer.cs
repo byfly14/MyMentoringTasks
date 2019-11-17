@@ -41,7 +41,7 @@ namespace MyKafkaProducerService
         private Task StartMainThread(CancellationToken cancellationToken)
         {
             // ReSharper disable once MethodSupportsCancellation
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
                 foreach (var file in _blockingCollection.GetConsumingEnumerable())
                 {
@@ -50,18 +50,19 @@ namespace MyKafkaProducerService
                         _blockingCollection.CompleteAdding();
                     }
 
-                    StartFileProcessing(file, cancellationToken);
+                    await StartFileProcessing(file, cancellationToken).ConfigureAwait(false);
                 }
             });
         }
 
         private async Task StartFileProcessing(FileSystemEventArgs fileSystemEventArgs, CancellationToken cancellationToken)
         {
+            //System.Diagnostics.Debugger.Launch();
             using (var file = File.Open(fileSystemEventArgs.FullPath, FileMode.Open, FileAccess.Read))
             {
                 var buffer = new byte[102400];
                 var topic = Guid.NewGuid().ToString();
-                await _broadcastProducer.ProduceAsync(topic, "broadcast").ConfigureAwait(false);
+                var topicResult = await _broadcastProducer.ProduceAsync(topic, "broadcast").ConfigureAwait(false);
 
                 var bf = new BinaryFormatter();
 
@@ -74,11 +75,6 @@ namespace MyKafkaProducerService
                         var data = ms.ToArray();
 
                         var deliveryResult = await _kafkaProducer.ProduceAsync(data, topic).ConfigureAwait(false);
-                        File.AppendAllLines(@"D:\1.txt",
-                            new List<string>
-                            {
-                                $"Message '{deliveryResult.Value}' produced to '{deliveryResult.Topic}'"
-                            });
                     }
                 }
             }
@@ -86,6 +82,7 @@ namespace MyKafkaProducerService
 
         private void FileSystemWatcherOnCreated(object sender, FileSystemEventArgs e)
         {
+            System.Diagnostics.Debugger.Launch();
             _blockingCollection.Add(e);
         }
 
