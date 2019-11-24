@@ -43,3 +43,7 @@
 /MyKafkaProducerService/bin/Debug
 /MyKafkaProducerService/obj/Debug
 /MyKafkaConsumerService/bin/Debug
+/KeyGen/bin/Debug
+/KeyGen/obj/Debug
+/KeyGenerator/bin/Debug
+/KeyGenerator/obj/Debug
