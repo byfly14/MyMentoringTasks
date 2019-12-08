@@ -1,0 +1,19 @@
+﻿<xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:all>
+    <xs:element name="Content" type="xs:string" minOccurs="0" maxOccurs="1">
+      <xs:annotation>
+        <xs:documentation>This is the documentation for the content</xs:documentation>
+      </xs:annotation>
+    </xs:element>
+  </xs:all>
+  <xs:attribute name="AdviceAttributes" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Attributes implementing IAdvice</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="References" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Additional reference assemblies</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+</xs:complexType>

@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 
 namespace MyKafkaConsumerService
 {
-    public class KafkaConsumer<T> : IDisposable
+    public class KafkaConsumer<T> : IKafkaConsumer<T>
     {
         private readonly IConsumer<Null, T> _consumer;
 
         private bool _disposed;
 
-        public EventHandler<ConsumeResult<Null, T>> ItemConsumed;
+        public EventHandler<ConsumeResult<Null, T>> ItemConsumed { get; set; }
 
         public KafkaConsumer(string brokerEndpoints)
         {
@@ -65,5 +62,12 @@ namespace MyKafkaConsumerService
 
             _disposed = true;
         }
+    }
+
+    public interface IKafkaConsumer<T> : IDisposable
+    {
+        void Subscribe(string topic);
+        Task StartConsuming(CancellationToken cancellationToken);
+        EventHandler<ConsumeResult<Null, T>> ItemConsumed { get; set; }
     }
 }

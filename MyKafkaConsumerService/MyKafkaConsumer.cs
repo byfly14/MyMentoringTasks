@@ -4,23 +4,24 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
+using Castle.DynamicProxy;
 using Confluent.Kafka;
 using MyKafka.Common;
 
 namespace MyKafkaConsumerService
 {
-    public class MyKafkaConsumer : IDisposable
+    public class MyKafkaConsumer : IMyKafkaConsumer
     {
         private bool _disposed;
         private Task _mainThread;
 
-        private readonly KafkaConsumer<byte[]> _consumer;
-        private readonly KafkaConsumer<string> _broadcastConsumer;
+        private readonly IKafkaConsumer<byte[]> _consumer;
+        private readonly IKafkaConsumer<string> _broadcastConsumer;
         private readonly string _folderToConsume;
         private readonly object _locker = new object();
         private readonly BlockingCollection<ConsumeResult<Null, byte[]>> _queue = new BlockingCollection<ConsumeResult<Null, byte[]>>();
 
-        public MyKafkaConsumer(string brokerEndpoints, string folderToConsume)
+        public MyKafkaConsumer(string brokerEndpoints, string folderToConsume, CallLoggingInterceptor callLoggingInterceptor, ProxyGenerator proxyGenerator)
         {
             if (!Directory.Exists(folderToConsume))
             {
@@ -29,10 +30,14 @@ namespace MyKafkaConsumerService
 
             _folderToConsume = folderToConsume;
 
-            _broadcastConsumer = new KafkaConsumer<string>(brokerEndpoints);
+            _broadcastConsumer = (IKafkaConsumer<string>)proxyGenerator.CreateInterfaceProxyWithTargetInterface(
+                typeof(IKafkaConsumer<string>), new KafkaConsumer<string>(brokerEndpoints),
+                ProxyGenerationOptions.Default, callLoggingInterceptor);
             _broadcastConsumer.ItemConsumed += BroadcastItemConsumed;
 
-            _consumer = new KafkaConsumer<byte[]>(brokerEndpoints);
+            _consumer = (IKafkaConsumer<byte[]>)proxyGenerator.CreateInterfaceProxyWithTargetInterface(
+                typeof(IKafkaConsumer<byte[]>), new[] { typeof(IDisposable) }, new KafkaConsumer<byte[]>(brokerEndpoints),
+                ProxyGenerationOptions.Default, callLoggingInterceptor);
             _consumer.ItemConsumed += ConsumerItemConsumed;
         }
 
@@ -112,5 +117,10 @@ namespace MyKafkaConsumerService
 
             _disposed = true;
         }
+    }
+
+    public interface IMyKafkaConsumer : IDisposable
+    {
+        void Listen(CancellationToken token);
     }
 }

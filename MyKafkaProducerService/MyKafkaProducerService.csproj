@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\CompileTimeWeaver.Fody.3.1.7\build\CompileTimeWeaver.Fody.props" Condition="Exists('..\packages\CompileTimeWeaver.Fody.3.1.7\build\CompileTimeWeaver.Fody.props')" />
   <Import Project="..\packages\librdkafka.redist.1.2.1\build\librdkafka.redist.props" Condition="Exists('..\packages\librdkafka.redist.1.2.1\build\librdkafka.redist.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -36,8 +37,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CompileTimeWeaver, Version=3.1.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompileTimeWeaver.Fody.3.1.7\lib\net461\CompileTimeWeaver.dll</HintPath>
+    </Reference>
     <Reference Include="Confluent.Kafka, Version=1.2.1.0, Culture=neutral, PublicKeyToken=12c514ca49093d1e, processorArchitecture=MSIL">
       <HintPath>..\packages\Confluent.Kafka.1.2.1\lib\net46\Confluent.Kafka.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
@@ -193,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KafkaProducer.cs" />
+    <Compile Include="MyCompileTimeWeaverAttribute.cs" />
     <Compile Include="MyKafkaProducer.cs" />
     <Compile Include="MyKafkaProducerService.cs">
       <SubType>Component</SubType>
@@ -219,5 +227,8 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\librdkafka.redist.1.2.1\build\librdkafka.redist.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\librdkafka.redist.1.2.1\build\librdkafka.redist.props'))" />
+    <Error Condition="!Exists('..\packages\Fody.3.3.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.3.3.5\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\CompileTimeWeaver.Fody.3.1.7\build\CompileTimeWeaver.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CompileTimeWeaver.Fody.3.1.7\build\CompileTimeWeaver.Fody.props'))" />
   </Target>
+  <Import Project="..\packages\Fody.3.3.5\build\Fody.targets" Condition="Exists('..\packages\Fody.3.3.5\build\Fody.targets')" />
 </Project>

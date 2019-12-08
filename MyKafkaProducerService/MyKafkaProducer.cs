@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
@@ -9,6 +8,7 @@ using MyKafka.Common;
 
 namespace MyKafkaProducerService
 {
+    [MyCompileTimeWeaver]
     public class MyKafkaProducer : IDisposable
     {
         private bool _disposed;

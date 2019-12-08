@@ -9,6 +9,8 @@ namespace MyKafkaProducerService
         /// </summary>
         private static void Main()
         {
+            log4net.Config.XmlConfigurator.Configure();
+            System.Diagnostics.Debugger.Launch();
             var servicesToRun = new ServiceBase[]
             {
                 new MyKafkaProducerService()

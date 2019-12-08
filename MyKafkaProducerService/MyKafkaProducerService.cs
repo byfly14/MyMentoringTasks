@@ -3,6 +3,7 @@ using System.Threading;
 
 namespace MyKafkaProducerService
 {
+    [MyCompileTimeWeaver]
     public partial class MyKafkaProducerService : ServiceBase
     {
         private const string BrokerEndpoints = "localhost:9092";

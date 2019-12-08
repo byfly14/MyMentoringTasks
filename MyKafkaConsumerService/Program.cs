@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ServiceProcess;
+using Autofac;
+using Castle.DynamicProxy;
 
 namespace MyKafkaConsumerService
 {
@@ -14,12 +11,18 @@ namespace MyKafkaConsumerService
         /// </summary>
         static void Main()
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
+            log4net.Config.XmlConfigurator.Configure();
+            System.Diagnostics.Debugger.Launch();
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(new ProxyGenerator()).SingleInstance();
+            builder.RegisterInstance(new CallLoggingInterceptor()).SingleInstance();
+            builder.RegisterType(typeof(MyKafkaConsumerService)).SingleInstance();
+            var container = builder.Build();
+            var servicesToRun = new ServiceBase[]
             {
-                new MyKafkaConsumerService()
+                container.Resolve<MyKafkaConsumerService>()
             };
-            ServiceBase.Run(ServicesToRun);
+            ServiceBase.Run(servicesToRun);
         }
     }
 }
