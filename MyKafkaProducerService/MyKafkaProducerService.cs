@@ -3,7 +3,6 @@ using System.Threading;
 
 namespace MyKafkaProducerService
 {
-    [MyCompileTimeWeaver]
     public partial class MyKafkaProducerService : ServiceBase
     {
         private const string BrokerEndpoints = "localhost:9092";
@@ -19,7 +18,7 @@ namespace MyKafkaProducerService
 
         protected override void OnStart(string[] args)
         {
-            //System.Diagnostics.Debugger.Launch();
+            System.Diagnostics.Debugger.Launch();
 
             _producer = new MyKafkaProducer(BrokerEndpoints, FolderToProduce);
             _producer.Start(_cts.Token);

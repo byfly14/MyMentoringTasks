@@ -200,13 +200,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KafkaProducer.cs" />
-    <Compile Include="MyCompileTimeWeaverAttribute.cs" />
     <Compile Include="MyKafkaProducer.cs" />
     <Compile Include="MyKafkaProducerService.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MyKafkaProducerService.Designer.cs">
       <DependentUpon>MyKafkaProducerService.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MyT4LoggingTemplate.cs">
+      <DependentUpon>MyT4LoggingTemplate.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -220,6 +224,15 @@
       <Project>{23747F29-2A7A-4228-BBE3-B10FDFAEB82D}</Project>
       <Name>MyKafka.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MyT4LoggingTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MyT4LoggingTemplate.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
