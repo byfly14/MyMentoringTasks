@@ -1,5 +1,7 @@
 ﻿using System.ServiceProcess;
 using System.Threading;
+using MyKafka.Common;
+using MyProxyLoggerNameSpace;
 
 namespace MyKafkaProducerService
 {
@@ -9,7 +11,7 @@ namespace MyKafkaProducerService
         private const string FolderToProduce = @"D:\FolderToProduce";
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
-        private MyKafkaProducer _producer;
+        private MyKafkaProducer_Proxy _producer;
 
         public MyKafkaProducerService()
         {
@@ -20,14 +22,14 @@ namespace MyKafkaProducerService
         {
             System.Diagnostics.Debugger.Launch();
 
-            _producer = new MyKafkaProducer(BrokerEndpoints, FolderToProduce);
+            IMyKafkaProducer target = new MyKafkaProducer(BrokerEndpoints, FolderToProduce);
+            _producer = new MyKafkaProducer_Proxy(target);
             _producer.Start(_cts.Token);
         }
 
         protected override void OnStop()
         {
             _cts.Cancel();
-            _producer.Dispose();
         }
     }
 }

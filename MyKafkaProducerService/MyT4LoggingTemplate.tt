@@ -1,57 +1,68 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
+﻿<#@ template debug="true" hostSpecific="true" #>
 <#@ output extension=".cs" #>
-<# bool namespaceInserted = false; #>
-<# if(!namespaceInserted){#>
-using System;
-using System.Threading.Tasks;
-using CompileTimeWeaver;
-
-namespace MyT4LoggingAspect {
+<#@ assembly name="D:\MyMentoringTasks\CodegenHelper\bin\Debug\CodegenHelper.dll" #>
+<#@ assembly name="D:\MyMentoringTasks\MyKafka.Common\bin\Debug\MyKafka.Common.dll" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="CodegenHelper" #>
 <#
-namespaceInserted = true;
-}#>
-
-	public class MyCompileTimeWeaverAttribute : AdviceAttribute
-    {
-        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(MyCompileTimeWeaverAttribute));
-        public override object Advise(IInvocation invocation)
-        {
-            try
-            {
-                Logger.Info($"{DateTime.Now}: Entering {invocation.Method.Name} {string.Join(", ", invocation.Args)}");
-                return invocation.Proceed();
-            }
-            catch (Exception ex)
-            {
-                Logger.Info($"{DateTime.Now}: {ex}");
-                throw;
-            }
-            finally
-            {
-                Logger.Info($"{DateTime.Now}: Finishing {invocation.Method.Name}; Return value: {invocation.ReturnValue}");
-            }
-        }
-
-        public override async Task<object> AdviseAsync(IInvocation invocation)
-        {
-            try
-            {
-                Logger.Info($"{DateTime.Now}: Entering {invocation.Method.Name} {string.Join(", ", invocation.Args)}");
-                return await invocation.ProceedAsync();
-            }
-            catch (Exception ex)
-            {
-                Logger.Info($"{DateTime.Now}: {ex}");
-                throw;
-            }
-            finally
-            {
-                Logger.Info($"{DateTime.Now}: Finishing {invocation.Method.Name}; Return value: {invocation.ReturnValue}");
-            }
-        }
-    }
+Assembly loadedAssembly = Assembly.GetAssembly(typeof(MyKafka.Common.IMyKafkaProducer));bool namespaceInserted = false;
+Type[] requiredTypes = loadedAssembly.GetTypes();
+foreach(Type T in requiredTypes)
+{
+if(!T.IsInterface)
+{
+continue;
 }
+string className=T.Name.Remove(0,1);
+#>
+
+<#if(!namespaceInserted) {#>
+using System;
+using <#=T.Namespace#>;
+
+namespace MyProxyLoggerNameSpace {
+	public class <#=className#>_Proxy {
+	<#
+	MemberInfo[] members = T.GetMethods();
+	foreach(MemberInfo member in members)
+	{
+
+	#>
+		private readonly <#=T.Name#> _target;
+
+		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(<#=className#>_Proxy));
+
+		public <#=className#>_Proxy(<#=T.Name#> target)
+		{
+			this._target = target;
+		}
+
+		public <#=CodeGenHelper.GenerateMethodDeclaration((MethodInfo)member)#>
+		{
+			try
+            {
+                Logger.Info($"{DateTime.Now}: Entering \"<#=member.Name#>(<#=CodeGenHelper.GenerateParametersList((MethodInfo)member, false)#>)\" ");
+                <#if(((MethodInfo)member).ReturnType == typeof(void)){#>
+				this._target.<#=member.Name#>(<#=CodeGenHelper.GenerateArgumentsList((MethodInfo)member)#>);
+				<#}
+				else{#>
+				return this._target.<#=member.Name#>(<#=CodeGenHelper.GenerateArgumentsList((MethodInfo)member)#>);
+				<#}#>
+            }
+            catch (Exception ex)
+            {
+                Logger.Info($"{DateTime.Now}: {ex}");
+                throw;
+            }
+            finally
+            {
+                Logger.Info($"{DateTime.Now}: Finishing \"<#=member.Name#>(<#=CodeGenHelper.GenerateParametersList((MethodInfo)member, false)#>)\" ");
+            }
+		}
+		<#}
+		#>
+		}
+		}
+	<#}#>
+<#}#>

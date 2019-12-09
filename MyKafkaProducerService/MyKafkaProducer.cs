@@ -5,12 +5,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
 using MyKafka.Common;
-using MyT4LoggingAspect;
 
 namespace MyKafkaProducerService
 {
-    [MyCompileTimeWeaver]
-    public class MyKafkaProducer : IDisposable
+    public class MyKafkaProducer : IMyKafkaProducer
     {
         private bool _disposed;
         private Task _mainThread;

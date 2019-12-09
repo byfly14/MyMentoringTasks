@@ -208,9 +208,9 @@
       <DependentUpon>MyKafkaProducerService.cs</DependentUpon>
     </Compile>
     <Compile Include="MyT4LoggingTemplate.cs">
-      <DependentUpon>MyT4LoggingTemplate.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>MyT4LoggingTemplate.tt</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

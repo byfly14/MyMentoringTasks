@@ -1,19 +1,25 @@
-﻿using System;
-using System.Threading.Tasks;
-using CompileTimeWeaver;
+﻿
+using System;
+using MyKafka.Common;
 
-namespace MyT4LoggingAspect {
+namespace MyProxyLoggerNameSpace {
+	public class MyKafkaProducer_Proxy {
+			private readonly IMyKafkaProducer _target;
 
-	public class MyCompileTimeWeaverAttribute : AdviceAttribute
-    {
-        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(MyCompileTimeWeaverAttribute));
-        public override object Advise(IInvocation invocation)
-        {
-            try
+		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(MyKafkaProducer_Proxy));
+
+		public MyKafkaProducer_Proxy(IMyKafkaProducer target)
+		{
+			this._target = target;
+		}
+
+		public void Start(System.Threading.CancellationToken cancellationToken)
+		{
+			try
             {
-                Logger.Info($"{DateTime.Now}: Entering {invocation.Method.Name} {string.Join(", ", invocation.Args)}");
-                return invocation.Proceed();
-            }
+                Logger.Info($"{DateTime.Now}: Entering \"Start(System.Threading.CancellationToken cancellationToken)\" ");
+                				this._target.Start(cancellationToken);
+				            }
             catch (Exception ex)
             {
                 Logger.Info($"{DateTime.Now}: {ex}");
@@ -21,26 +27,9 @@ namespace MyT4LoggingAspect {
             }
             finally
             {
-                Logger.Info($"{DateTime.Now}: Finishing {invocation.Method.Name}; Return value: {invocation.ReturnValue}");
+                Logger.Info($"{DateTime.Now}: Finishing \"Start(System.Threading.CancellationToken cancellationToken)\" ");
             }
-        }
-
-        public override async Task<object> AdviseAsync(IInvocation invocation)
-        {
-            try
-            {
-                Logger.Info($"{DateTime.Now}: Entering {invocation.Method.Name} {string.Join(", ", invocation.Args)}");
-                return await invocation.ProceedAsync();
-            }
-            catch (Exception ex)
-            {
-                Logger.Info($"{DateTime.Now}: {ex}");
-                throw;
-            }
-            finally
-            {
-                Logger.Info($"{DateTime.Now}: Finishing {invocation.Method.Name}; Return value: {invocation.ReturnValue}");
-            }
-        }
-    }
-}
+		}
+				}
+		}
+	
